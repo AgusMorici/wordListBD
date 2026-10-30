@@ -13,7 +13,7 @@ export async function connectToDatabase() {
         try {
             client = new MongoClient(uri);
             await client.connect();
-            db = client.db("sample_tp2");
+            db = client.db("WordList_db");
             console.log("Conexion a MongoDB establecida");
         } catch (error) {
             console.log("Error al conectarme con base de datos");
