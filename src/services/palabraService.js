@@ -1,10 +1,10 @@
 import {
-    getAllProducts,
-    getProductById,
-    createProduct,
-    updateProduct,
-    deleteProduct,
-} from "../data/productData.js";
+    getAllPalabras,
+    getPalabraById,
+    createPalabra,
+    updatePalabra,
+    deletePalabra,
+} from "../data/palabraData.js";
 
 function createHttpError(statusCode, message) {
     const error = new Error(message);
@@ -12,7 +12,7 @@ function createHttpError(statusCode, message) {
     return error;
 }
 
-function validateProductData(data) {
+function validatePalabraData(data) {
     const { name, brand, category, price, stock } = data;
 
     if (!name || typeof name !== "string" || name.trim().length === 0) {
@@ -32,37 +32,37 @@ function validateProductData(data) {
     }
 }
 
-export async function listProducts(filters = {}) {
-    return await getAllProducts(filters);
+export async function listPalabras(filters = {}) {
+    return await getAllPalabras(filters);
 }
 
-export async function findProductById(id) {
-    const product = await getProductById(id);
-    if (!product) {
-        throw createHttpError(404, "Producto no encontrado");
+export async function findPalabraById(id) {
+    const palabra = await getPalabraById(id);
+    if (!palabra) {
+        throw createHttpError(404, "Palabra no encontrado");
     }
-    return product;
+    return palabra;
 }
 
-export async function addProduct(data) {
-    validateProductData(data);
+export async function addPalabra(data) {
+    validatePalabraData(data);
     const { name, brand, category, price, stock } = data;
-    return await createProduct({ name: name.trim(), brand: brand.trim(), category: category.trim(), price, stock });
+    return await createPalabra({ name: name.trim(), brand: brand.trim(), category: category.trim(), price, stock });
 }
 
-export async function replaceProduct(id, data) {
-    validateProductData(data);
+export async function replacePalabra(id, data) {
+    validatePalabraData(data);
     const { name, brand, category, price, stock } = data;
-    const updated = await updateProduct(id, { name: name.trim(), brand: brand.trim(), category: category.trim(), price, stock });
+    const updated = await updatePalabra(id, { name: name.trim(), brand: brand.trim(), category: category.trim(), price, stock });
     if (!updated) {
-        throw createHttpError(404, "Producto no encontrado");
+        throw createHttpError(404, "Palabra no encontrado");
     }
     return updated;
 }
 
-export async function removeProduct(id) {
-    const deleted = await deleteProduct(id);
+export async function removePalabra(id) {
+    const deleted = await deletePalabra(id);
     if (!deleted) {
-        throw createHttpError(404, "Producto no encontrado");
+        throw createHttpError(404, "Palabra no encontrado");
     }
 }

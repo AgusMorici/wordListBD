@@ -2,7 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import userRoutes from "./routes/userRoutes.js";
-import productRoutes from "./routes/productRoutes.js";
+import palabraRoutes from "./routes/palabraRoutes.js";
 
 // CORS significa Cross-Origin Resource Sharing (Intercambio de Recursos de Origen Cruzado).
 
@@ -15,13 +15,13 @@ app.use(express.json());
 
 
 // Ruta base
-app.get("/", (req, res) => {
+app.get("/", (req, res) => {    
     res.send("API funcionando 🚀");
 });
 
 // Rutas
 app.use("/api/users", userRoutes);
-app.use("/api/products", productRoutes);
+app.use("/api/palabras", palabraRoutes);
 
 // Manejo global de 404 (ruta no encontrada)
 app.use((req, res) => {

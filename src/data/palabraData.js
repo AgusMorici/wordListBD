@@ -2,11 +2,11 @@ import { ObjectId } from "mongodb";
 import { getDb } from "./connection.js";
 
 function getCollection() {
-    return getDb().collection("products");
+    return getDb().collection("palabras");
 }
 
 // Convierte el documento de Mongo ({ _id, ... }) al formato que usa la app ({ id, ... })
-function mapProduct(doc) {
+function mapPalabra(doc) {
     if (!doc) return null;
     const { _id, ...rest } = doc;
     return { id: _id.toString(), ...rest };
@@ -17,38 +17,38 @@ function toObjectId(id) {
     return ObjectId.isValid(id) && String(id).length === 24 ? new ObjectId(id) : null;
 }
 
-export async function getAllProducts({ category, brand } = {}) {
+export async function getAllPalabras({ category, brand } = {}) {
     const filter = {};
     if (category) filter.category = String(category);
     if (brand) filter.brand = String(brand);
     // collation strength 2: compara sin distinguir mayúsculas/minúsculas
-    const products = await getCollection()
+    const palabras = await getCollection()
         .find(filter, { collation: { locale: "es", strength: 2 } })
         .toArray();
-    return products.map(mapProduct);
+    return palabras.map(mapProduct);
 }
 
-export async function getProductById(id) {
+export async function getPalabraById(id) {
     const _id = toObjectId(id);
     if (!_id) return null;
-    const product = await getCollection().findOne({ _id });
-    return mapProduct(product);
+    const palabra = await getCollection().findOne({ _id });
+    return mapPalabra(palabra);
 }
 
-export async function createProduct(productData) {
-    const doc = { ...productData };
+export async function createPalabra(palabraData) {
+    const doc = { ...palabraData };
     const { insertedId } = await getCollection().insertOne(doc);
-    return { id: insertedId.toString(), ...productData };
+    return { id: insertedId.toString(), ...palabraData };
 }
 
-export async function updateProduct(id, productData) {
+export async function updatePalabra(id, palabraData) {
     const _id = toObjectId(id);
     if (!_id) return null;
-    const updated = await getCollection().findOneAndReplace({ _id }, productData, { returnDocument: "after" });
-    return mapProduct(updated);
+    const updated = await getCollection().findOneAndReplace({ _id }, palabraData, { returnDocument: "after" });
+    return mapPalabra(updated);
 }
 
-export async function deleteProduct(id) {
+export async function deletePalabra(id) {
     const _id = toObjectId(id);
     if (!_id) return false;
     const { deletedCount } = await getCollection().deleteOne({ _id });
