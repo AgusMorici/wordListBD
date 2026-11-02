@@ -48,7 +48,8 @@ export async function registerUser({name, email, password}) {
     const newUser = {
         name, 
         email, 
-        password: hashedPassword
+        password: hashedPassword, 
+        palabras: []
     };
 
     console.log("Nuevo usuario a registrar", newUser);
@@ -74,4 +75,24 @@ export async function findByCredentials(email, password) {
     }
 
     return user;
+}
+export async function addPalabraToUser(userId, palabraId) {
+  return getDb().collection("users").updateOne(
+    { _id: new ObjectId(userId) },
+    { $addToSet: { palabras: new ObjectId(palabraId) } }
+  );
+}
+
+export async function removePalabraFromUser(userId, palabraId) {
+  return getDb().collection("users").updateOne(
+    { _id: new ObjectId(userId) },
+    { $pull: { palabras: new ObjectId(palabraId) } }
+  );
+}
+
+export async function getPalabrasDeUser(userId) {
+  const user = await getDb().collection("users").findOne({ _id: new ObjectId(userId) });
+  return getDb().collection("palabras")
+    .find({ _id: { $in: user?.palabras ?? [] } })
+    .toArray();
 }

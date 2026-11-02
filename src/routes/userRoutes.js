@@ -1,5 +1,5 @@
 import express from "express";
-import { getUsers, getUser, registerUserController, loginUserController } from "../controllers/userController.js";
+import { getUsers, getUser, registerUserController, loginUserController, getMisPalabras, agregarPalabra, quitarPalabra } from "../controllers/userController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 const userRoutes = express.Router();
@@ -12,5 +12,9 @@ userRoutes.get("/:id", getUser);
 userRoutes.post("/register", registerUserController);
 userRoutes.post("/login", loginUserController);
 
+// GET /api/users/pablabras
+userRoutes.get("/me/palabras", authMiddleware, getMisPalabras);
+userRoutes.post("/me/palabras/:palabraId", authMiddleware, agregarPalabra);
+userRoutes.delete("/me/palabras/:palabraId", authMiddleware, quitarPalabra);
 
 export default userRoutes;
