@@ -4,6 +4,7 @@ import {
     addPalabra,
     replacePalabra,
     removePalabra,
+    addPalabraConIA
 } from "../services/palabraService.js";
 
 function handleServiceError(error, res, next) {
@@ -57,6 +58,16 @@ export async function deletePalabra(req, res, next) {
         const { id } = req.params;
         await removePalabra(id);
         res.status(204).send();
+    } catch (error) {
+        handleServiceError(error, res, next);
+    }
+}
+
+export async function crearPalabraConIAController(req, res, next) {
+    try {
+        const { texto } = req.body; 
+        const palabraCreada = await addPalabraConIA(texto);
+        return res.status(201).json({ message: "Palabra creada con IA", data: palabraCreada });
     } catch (error) {
         handleServiceError(error, res, next);
     }
