@@ -23,6 +23,6 @@ palabraRoutes.post("/", createPalabra);
 palabraRoutes.put("/:id", updatePalabra);
 
 // DELETE /api/palabras/:id
-palabraRoutes.delete("/:id", deletePalabras);
+palabraRoutes.delete("/:id", deletePalabra);
 
 export default palabraRoutes;
