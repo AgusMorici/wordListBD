@@ -15,9 +15,9 @@ function handleServiceError(error, res, next) {
 
 export async function getPalabras(req, res, next) {
     try {
-        const { category, brand } = req.query;
-        const products = await listPalabras({ category, brand });
-        res.status(200).json({ data: products });
+        const { category } = req.query;
+        const palabras = await listPalabras({ category });
+        res.status(200).json({ data: palabras });
     } catch (error) {
         handleServiceError(error, res, next);
     }
@@ -26,7 +26,7 @@ export async function getPalabras(req, res, next) {
 export async function getPalabra(req, res, next) {
     try {
         const { id } = req.params;
-        const product = await findPalabraById(id);
+        const palabra = await findPalabraById(id);
         res.status(200).json({ data: palabra });
     } catch (error) {
         handleServiceError(error, res, next);
@@ -35,7 +35,7 @@ export async function getPalabra(req, res, next) {
 
 export async function createPalabra(req, res, next) {
     try {
-        const product = await addPalabra(req.body);
+        const palabra = await addPalabra(req.body);
         res.status(201).json({ message: "Palabra creada", data: palabra });
     } catch (error) {
         handleServiceError(error, res, next);
@@ -45,7 +45,7 @@ export async function createPalabra(req, res, next) {
 export async function updatePalabra(req, res, next) {
     try {
         const { id } = req.params;
-        const product = await replacePalabra(id, req.body);
+        const palabra = await replacePalabra(id, req.body);
         res.status(200).json({ message: "Palabra actualizada", data: palabra });
     } catch (error) {
         handleServiceError(error, res, next);

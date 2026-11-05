@@ -9,21 +9,20 @@ import {
 
 const palabraRoutes = express.Router();
 
-// GET /api/products
-// GET /api/products?category=notebook
-// GET /api/products?brand=Logitech
+// GET /api/palabras
+// GET /api/palabras?category=Frutas
 palabraRoutes.get("/", getPalabras);
 
-// GET /api/products/:id
+// GET /api/palabras/:id
 palabraRoutes.get("/:id", getPalabra);
 
-// POST /api/products
+// POST /api/palabras
 palabraRoutes.post("/", createPalabra);
 
-// PUT /api/products/:id
+// PUT /api/palabras/:id
 palabraRoutes.put("/:id", updatePalabra);
 
-// DELETE /api/products/:id
-palabraRoutes.delete("/:id", deletePalabra);
+// DELETE /api/palabras/:id
+palabraRoutes.delete("/:id", deletePalabras);
 
 export default palabraRoutes;

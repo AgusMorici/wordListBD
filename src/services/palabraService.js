@@ -13,22 +13,19 @@ function createHttpError(statusCode, message) {
 }
 
 function validatePalabraData(data) {
-    const { name, brand, category, price, stock } = data;
+    const { name, category, traduccion, ejemplo } = data;
 
     if (!name || typeof name !== "string" || name.trim().length === 0) {
-        throw createHttpError(400, "El campo 'name' es obligatorio y no puede estar vacío");
-    }
-    if (!brand || typeof brand !== "string" || brand.trim().length === 0) {
-        throw createHttpError(400, "El campo 'brand' es obligatorio");
+        throw createHttpError(400, "El campo 'name' (palabra) es obligatorio y no puede estar vacío");
     }
     if (!category || typeof category !== "string" || category.trim().length === 0) {
         throw createHttpError(400, "El campo 'category' es obligatorio");
     }
-    if (typeof price !== "number" || Number.isNaN(price) || price <= 0) {
-        throw createHttpError(400, "El campo 'price' debe ser numérico y mayor a 0");
+    if (!traduccion || typeof traduccion !== "string" || traduccion.trim().length === 0) {
+        throw createHttpError(400, "El campo 'traduccion' es obligatorio");
     }
-    if (!Number.isInteger(stock) || stock < 0) {
-        throw createHttpError(400, "El campo 'stock' debe ser un número entero mayor o igual a 0");
+    if (!ejemplo || typeof ejemplo !== "string" || ejemplo.trim().length === 0) {
+        throw createHttpError(400, "El campo 'ejemplo' es obligatorio");
     }
 }
 
@@ -46,16 +43,26 @@ export async function findPalabraById(id) {
 
 export async function addPalabra(data) {
     validatePalabraData(data);
-    const { name, brand, category, price, stock } = data;
-    return await createPalabra({ name: name.trim(), brand: brand.trim(), category: category.trim(), price, stock });
+    const { name, category, traduccion, ejemplo } = data;
+    return await createPalabra({ 
+        name: name.trim(), 
+        category: category.trim(), 
+        traduccion: traduccion.trim(),
+        ejemplo: ejemplo.trim()
+    });
 }
 
 export async function replacePalabra(id, data) {
     validatePalabraData(data);
-    const { name, brand, category, price, stock } = data;
-    const updated = await updatePalabra(id, { name: name.trim(), brand: brand.trim(), category: category.trim(), price, stock });
+    const { name, category, traduccion, ejemplo } = data;
+    const updated = await updatePalabra(id, { 
+        name: name.trim(), 
+        category: category.trim(), 
+        traduccion: traduccion.trim(),
+        ejemplo: ejemplo.trim()
+    });
     if (!updated) {
-        throw createHttpError(404, "Palabra no encontrado");
+        throw createHttpError(404, "Palabra no encontrada");
     }
     return updated;
 }

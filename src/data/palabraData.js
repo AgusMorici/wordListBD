@@ -17,15 +17,15 @@ function toObjectId(id) {
     return ObjectId.isValid(id) && String(id).length === 24 ? new ObjectId(id) : null;
 }
 
-export async function getAllPalabras({ category, brand } = {}) {
+export async function getAllPalabras({ category } = {}) {
     const filter = {};
     if (category) filter.category = String(category);
-    if (brand) filter.brand = String(brand);
+    
     // collation strength 2: compara sin distinguir mayúsculas/minúsculas
     const palabras = await getCollection()
         .find(filter, { collation: { locale: "es", strength: 2 } })
         .toArray();
-    return palabras.map(mapProduct);
+    return palabras.map(mapPalabra); // <-- CORREGIDO: ahora usa mapPalabra
 }
 
 export async function getPalabraById(id) {

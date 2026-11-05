@@ -1,4 +1,4 @@
-import { findAllUsers, findUserById, registerUser, findByCredentials } from "../data/userData.js";
+import { findAllUsers, findUserById, registerUser, findByCredentials, recordGameAttempt } from "../data/userData.js";
 
 function createHttpError(statusCode, message) {
     const error = new Error(message);
@@ -47,3 +47,14 @@ export async function loginUserServices(email, password) {
     return userWithoutPassword;
 }
 
+export async function registrarIntentoJuego(userId, palabraId, isCorrect) {
+    try {
+        return await recordGameAttempt(userId, palabraId, isCorrect);
+    } catch (error) {
+        console.log(error.message);
+        if (error.message === "Usuario no encontrado") {
+            throw createHttpError(404, error.message);
+        }
+        throw createHttpError(500, "Error al registrar el intento del juego");
+    }
+}

@@ -49,7 +49,8 @@ export async function registerUser({name, email, password}) {
         name, 
         email, 
         password: hashedPassword, 
-        palabras: []
+        palabras: [],
+        gameStats: []
     };
 
     console.log("Nuevo usuario a registrar", newUser);
@@ -95,4 +96,52 @@ export async function getPalabrasDeUser(userId) {
   return getDb().collection("palabras")
     .find({ _id: { $in: user?.palabras ?? [] } })
     .toArray();
+}
+
+
+
+function updateState(gameStats, palabraId, isCorrect) {
+    const stat = gameStats.find(gameStat => gameStat.palabraId.toString() === palabraId.toString());
+
+    if (!stat) {
+        gameStats.push({
+            palabraId: palabraId,
+            correctas: isCorrect ? 1 : 0,
+            incorrectas: isCorrect ? 0 : 1
+        });
+    } else {
+        if (isCorrect) {
+            stat.correctas += 1;
+        } else {
+            stat.incorrectas += 1;
+        }
+    }
+    
+    return gameStats;
+}
+
+
+
+export async function recordGameAttempt(userId, palabraId, isCorrect) {
+    await connectToDatabase();
+    
+    const _userId = toObjectId(userId);
+    const _palabraId = toObjectId(palabraId);
+
+    if (!_userId || !_palabraId) {
+        throw new Error("ID de usuario o palabra inválido");
+    }
+
+    const user = await getCollection().findOne({ _id: _userId });
+    if (!user) throw new Error("Usuario no encontrado");
+
+    user.gameStats = user.gameStats || [];
+
+    updateState(user.gameStats, _palabraId, isCorrect);
+
+
+    return await getCollection().updateOne(
+        { _id: _userId },
+        { $set: { gameStats: user.gameStats } }
+    );
 }

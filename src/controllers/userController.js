@@ -1,4 +1,4 @@
-import { listUsers, getUserById, registerUserService, loginUserServices } from "../services/userService.js";
+import { listUsers, getUserById, registerUserService, loginUserServices, registrarIntentoJuego } from "../services/userService.js";
 import { getPalabrasDeUser, addPalabraToUser, removePalabraFromUser } from "../data/userData.js";
 import jwt from "jsonwebtoken";
 
@@ -57,7 +57,7 @@ export async function loginUserController(req, res) {
         const user = await loginUserServices(email, password);
 
         // generar el token JWT
-        const token = jwt.sign({ _id: user._id, email: user.email }, process.env.SECRET, { expiresIn: "1h" });
+        const token = jwt.sign({ _id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
         // traer las palabras completas del usuario
         const palabras = await getPalabrasDeUser(user._id);
@@ -93,4 +93,17 @@ export const agregarPalabra = async (req, res) => {
 export const quitarPalabra = async (req, res) => {
     await removePalabraFromUser(req.user._id, req.params.palabraId);
     res.json({ message: "Palabra quitada de tu lista" });
+};
+
+export const registrarIntentoJuegoController = async (req, res, next) => {
+    try {
+        const { palabraId } = req.params;
+        const { isCorrect } = req.body;
+
+        await registrarIntentoJuego(req.user._id, palabraId, Boolean(isCorrect));
+
+        res.status(200).json({ message: "Progreso de juego actualizado con éxito" });
+    } catch (error) {
+        handleServiceError(error, res, next);
+    }
 };
