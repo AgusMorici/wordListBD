@@ -81,18 +81,31 @@ export async function loginUserController(req, res) {
     }
 }
 
-export const getMisPalabras = async (req, res) => {
-    res.json(await getPalabrasDeUser(req.user._id));
+export const getMisPalabras = async (req, res, next) => {
+    try {
+        const palabras = await getPalabrasDeUser(req.user._id);
+        res.status(200).json({ data: palabras });
+    } catch (error) {
+        handleServiceError(error, res, next);
+    }
 };
 
-export const agregarPalabra = async (req, res) => {
-    await addPalabraToUser(req.user._id, req.params.palabraId);
-    res.status(201).json({ message: "Palabra agregada a tu lista" });
+export const agregarPalabra = async (req, res, next) => {
+    try {
+        await addPalabraToUser(req.user._id, req.params.palabraId);
+        res.status(201).json({ message: "Palabra agregada a tu lista" });
+    } catch (error) {
+        handleServiceError(error, res, next);
+    }
 };
 
-export const quitarPalabra = async (req, res) => {
-    await removePalabraFromUser(req.user._id, req.params.palabraId);
-    res.json({ message: "Palabra quitada de tu lista" });
+export const quitarPalabra = async (req, res, next) => {
+    try {
+        await removePalabraFromUser(req.user._id, req.params.palabraId);
+        res.status(200).json({ message: "Palabra quitada de tu lista" });
+    } catch (error) {
+        handleServiceError(error, res, next);
+    }
 };
 
 export const registrarIntentoJuegoController = async (req, res, next) => {
