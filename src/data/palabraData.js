@@ -5,11 +5,17 @@ function getCollection() {
     return getDb().collection("palabras");
 }
 
-// Convierte el documento de Mongo ({ _id, ... }) al formato que usa la app ({ id, ... })
+// Convierte el documento de Mongo ({ _id, ... }) al formato que usa la app ({ id, word, translation, definition, category })
 function mapPalabra(doc) {
     if (!doc) return null;
-    const { _id, ...rest } = doc;
-    return { id: _id.toString(), ...rest };
+    const { _id, name, traduccion, ejemplo, ...rest } = doc;
+    return {
+        id: _id.toString(),
+        word: rest.word ?? name,
+        translation: rest.translation ?? traduccion,
+        definition: rest.definition ?? ejemplo,
+        ...rest,
+    };
 }
 
 // Devuelve null si el id no es un ObjectId válido (24 caracteres hex)
@@ -20,7 +26,7 @@ function toObjectId(id) {
 export async function getAllPalabras({ category } = {}) {
     const filter = {};
     if (category) filter.category = String(category);
-    
+
     // collation strength 2: compara sin distinguir mayúsculas/minúsculas
     const palabras = await getCollection()
         .find(filter, { collation: { locale: "es", strength: 2 } })

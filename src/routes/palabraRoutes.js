@@ -5,24 +5,30 @@ import {
     createPalabra,
     updatePalabra,
     deletePalabra,
+    crearPalabraConIAController,
 } from "../controllers/palabraController.js";
+import { authMiddleware } from "../middleware/auth.js";
 
 const palabraRoutes = express.Router();
 
-// GET /api/palabras
-// GET /api/palabras?category=Frutas
+// GET /api/words
+// GET /api/words?category=General
 palabraRoutes.get("/", getPalabras);
 
-// GET /api/palabras/:id
+// POST /api/words/ia
+palabraRoutes.post("/ia", authMiddleware, crearPalabraConIAController);
+
+// GET /api/words/:id
 palabraRoutes.get("/:id", getPalabra);
 
-// POST /api/palabras
-palabraRoutes.post("/", createPalabra);
+// POST /api/words
+palabraRoutes.post("/", authMiddleware, createPalabra);
 
-// PUT /api/palabras/:id
+
+// PUT /api/words/:id
 palabraRoutes.put("/:id", updatePalabra);
 
-// DELETE /api/palabras/:id
+// DELETE /api/words/:id
 palabraRoutes.delete("/:id", deletePalabra);
 
 export default palabraRoutes;

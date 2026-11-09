@@ -93,9 +93,16 @@ export async function removePalabraFromUser(userId, palabraId) {
 
 export async function getPalabrasDeUser(userId) {
   const user = await getDb().collection("users").findOne({ _id: new ObjectId(userId) });
-  return getDb().collection("palabras")
+  const docs = await getDb().collection("palabras")
     .find({ _id: { $in: user?.palabras ?? [] } })
     .toArray();
+  return docs.map(({ _id, name, traduccion, ejemplo, ...rest }) => ({
+    id: _id.toString(),
+    word: rest.word ?? name,
+    translation: rest.translation ?? traduccion,
+    definition: rest.definition ?? ejemplo,
+    ...rest,
+  }));
 }
 
 

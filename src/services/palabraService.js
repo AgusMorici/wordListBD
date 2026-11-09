@@ -24,17 +24,17 @@ const SYSTEM_PROMPT = `Eres un asistente experto en enseñanza de inglés y lexi
 El usuario te enviará una palabra o frase en inglés o en español. Tu tarea es generar sus datos complementarios para un diccionario bilingüe.
 
 Reglas:
-1. "name": La palabra o frase SIEMPRE EN INGLÉS. Si el usuario te la envió en español, traducila al inglés; si te la envió en inglés, dejala tal cual.
-2. "traduccion": Traducí la palabra o frase al español rioplatense natural (Argentina). Interpretá modismos y expresiones según su uso local (el sentido, no palabra por palabra). Si el usuario ingresó originalmente la palabra en español, este campo debe contener su traducción al inglés o viceversa, asegurando que "name" sea el término en inglés y "traduccion" el término en español.
+1. "word": La palabra o frase SIEMPRE EN INGLÉS. Si el usuario te la envió en español, traducila al inglés; si te la envió en inglés, dejala tal cual.
+2. "translation": Traducí la palabra o frase al español rioplatense natural (Argentina). Interpretá modismos y expresiones según su uso local (el sentido, no palabra por palabra). Si el usuario ingresó originalmente la palabra en español, este campo debe contener su traducción al español asegurando que "word" sea el término en inglés y "translation" el término en español.
 3. "category": Seleccioná exactamente una de estas categorías: ${CATEGORIAS.map((c) => `${c}`).join(", ")}. Si no encaja claramente en ninguna, usá "General".
-4. "ejemplo": Escribí una oración de ejemplo clara en inglés que use la palabra.
+4. "definition": Escribí una definición u oración de ejemplo clara en inglés que explique o use la palabra.
 
 Respondé SIEMPRE y ÚNICAMENTE con un JSON válido con esta estructura estricta:
 {
-  "name": "string con la palabra final en inglés",
-  "traduccion": "string con la traducción al español rioplatense",
+  "word": "string con la palabra final en inglés",
+  "translation": "string con la traducción al español rioplatense",
   "category": "string con la categoría seleccionada",
-  "ejemplo": "string con la oración de ejemplo"
+  "definition": "string con la definición u oración de ejemplo"
 }
 No incluyas texto fuera del JSON.`;
 
@@ -45,19 +45,19 @@ function createHttpError(statusCode, message) {
 }
 
 function validatePalabraData(data) {
-    const { name, category, traduccion, ejemplo } = data;
+    const { word, category, translation, definition } = data;
 
-    if (!name || typeof name !== "string" || name.trim().length === 0) {
-        throw createHttpError(400, "El campo 'name' (palabra) es obligatorio y no puede estar vacío");
+    if (!word || typeof word !== "string" || word.trim().length === 0) {
+        throw createHttpError(400, "El campo 'word' es obligatorio y no puede estar vacío");
     }
     if (!category || typeof category !== "string" || category.trim().length === 0) {
         throw createHttpError(400, "El campo 'category' es obligatorio");
     }
-    if (!traduccion || typeof traduccion !== "string" || traduccion.trim().length === 0) {
-        throw createHttpError(400, "El campo 'traduccion' es obligatorio");
+    if (!translation || typeof translation !== "string" || translation.trim().length === 0) {
+        throw createHttpError(400, "El campo 'translation' es obligatorio");
     }
-    if (!ejemplo || typeof ejemplo !== "string" || ejemplo.trim().length === 0) {
-        throw createHttpError(400, "El campo 'ejemplo' es obligatorio");
+    if (!definition || typeof definition !== "string" || definition.trim().length === 0) {
+        throw createHttpError(400, "El campo 'definition' es obligatorio");
     }
 }
 
@@ -77,23 +77,23 @@ export async function findPalabraById(id) {
 
 export async function addPalabra(data) {
     validatePalabraData(data);
-    const { name, category, traduccion, ejemplo } = data;
-    return await createPalabra({ 
-        name: name.trim(), 
-        category: category.trim(), 
-        traduccion: traduccion.trim(),
-        ejemplo: ejemplo.trim()
+    const { word, category, translation, definition } = data;
+    return await createPalabra({
+        word: word.trim(),
+        category: category.trim(),
+        translation: translation.trim(),
+        definition: definition.trim()
     });
 }
 
 export async function replacePalabra(id, data) {
     validatePalabraData(data);
-    const { name, category, traduccion, ejemplo } = data;
-    const updated = await updatePalabra(id, { 
-        name: name.trim(), 
-        category: category.trim(), 
-        traduccion: traduccion.trim(),
-        ejemplo: ejemplo.trim()
+    const { word, category, translation, definition } = data;
+    const updated = await updatePalabra(id, {
+        word: word.trim(),
+        category: category.trim(),
+        translation: translation.trim(),
+        definition: definition.trim()
     });
     if (!updated) {
         throw createHttpError(404, "Palabra no encontrada");
@@ -130,10 +130,10 @@ export async function addPalabraConIA(texto) {
 
         // Preparamos el objeto con los datos generados por la IA
         const datosGenerados = {
-            name: parsed.name ? parsed.name.trim() : "",
+            word: parsed.word ? parsed.word.trim() : "",
             category: parsed.category ? parsed.category.trim() : "",
-            traduccion: parsed.traduccion ? parsed.traduccion.trim() : "",
-            ejemplo: parsed.ejemplo ? parsed.ejemplo.trim() : ""
+            translation: parsed.translation ? parsed.translation.trim() : "",
+            definition: parsed.definition ? parsed.definition.trim() : ""
         };
 
         // Validamos que los datos cumplan con las reglas de tu esquema

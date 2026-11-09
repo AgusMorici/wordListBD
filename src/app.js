@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 
 // Rutas
 app.use("/api/users", userRoutes);
-app.use("/api/palabras", palabraRoutes);
+app.use("/api/words", palabraRoutes);
 
 // Manejo global de 404 (ruta no encontrada)
 app.use((req, res) => {

@@ -12,10 +12,10 @@ userRoutes.get("/:id", getUser);
 userRoutes.post("/register", registerUserController);
 userRoutes.post("/login", loginUserController);
 
-// GET /api/users/pablabras
-userRoutes.get("/me/palabras", authMiddleware, getMisPalabras);
-userRoutes.post("/me/palabras/:palabraId", authMiddleware, agregarPalabra);
-userRoutes.delete("/me/palabras/:palabraId", authMiddleware, quitarPalabra);
+// GET /api/users/me/words
+userRoutes.get("/me/words", authMiddleware, getMisPalabras);
+userRoutes.post("/me/words/:palabraId", authMiddleware, agregarPalabra);
+userRoutes.delete("/me/words/:palabraId", authMiddleware, quitarPalabra);
 
-userRoutes.post('/me/palabras/:palabraId/game-attempt', authMiddleware, registrarIntentoJuegoController);
+userRoutes.post('/me/words/:palabraId/game-attempt', authMiddleware, registrarIntentoJuegoController);
 export default userRoutes;
