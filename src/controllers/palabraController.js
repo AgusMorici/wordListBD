@@ -38,10 +38,7 @@ export async function getPalabra(req, res, next) {
 export async function createPalabra(req, res, next) {
     try {
         const palabra = await addPalabra(req.body);
-        if (req.user?._id) {
-            await addPalabraToUser(req.user._id, palabra.id);
-        }
-        res.status(201).json({ message: "Palabra creada y asignada a tu lista", data: palabra });
+        res.status(201).json({ message: "Palabra creada", data: palabra });
     } catch (error) {
         handleServiceError(error, res, next);
     }
