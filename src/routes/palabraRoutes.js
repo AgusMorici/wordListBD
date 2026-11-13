@@ -22,7 +22,7 @@ palabraRoutes.post("/ia", authMiddleware, crearPalabraConIAController);
 palabraRoutes.get("/:id", getPalabra);
 
 // POST /api/words
-palabraRoutes.post("/", createPalabra);
+palabraRoutes.post("/", authMiddleware, createPalabra);
 
 
 // PUT /api/words/:id
